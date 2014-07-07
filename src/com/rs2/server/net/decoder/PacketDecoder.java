@@ -1,5 +1,6 @@
 package com.rs2.server.net.decoder;
 
+import com.rs2.server.net.StreamBuffer;
 import com.rs2.server.net.packet.Packet;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -49,7 +50,7 @@ public class PacketDecoder extends FrameDecoder {
                 try {
                     ChannelBuffer payload = ChannelBuffers.buffer(length);
                     payload.writeBytes(data);
-                    return new Packet(opcode, payload);
+                    return new Packet(opcode, StreamBuffer.newInBuffer(payload));
                 } finally {
                     opcode = -1;
                     length = -1;

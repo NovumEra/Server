@@ -7,6 +7,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.security.SecureRandom;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -97,6 +98,25 @@ public class Client {
     }
 
     public boolean isWritable() {
-        return channel.isWritable();
+        return channel != null && channel.isWritable();
+    }
+
+    public String getHost() {
+        if(channel == null) {
+            return "unknown";
+        }
+        return ((InetSocketAddress) channel.getRemoteAddress()).getAddress().getHostAddress();
+    }
+
+    @Override
+    public String toString() {
+        return getUsername() == null ? "Client(" + getHost() + ")" : "Player(" + getUsername() + ":" + getPassword() + " - " + getHost() + ")";
+    }
+
+    public void disconnect() {
+        if(getChannel() != null) {
+            getChannel().close();
+            getChannel().setAttachment(null);
+        }
     }
 }

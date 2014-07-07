@@ -37,8 +37,8 @@ public class LoginDecoder extends FrameDecoder {
                         return null;
 
                     int loginRequest = buffer.readUnsignedByte();
-                    System.out.println("Login Request: "+loginRequest);
                     if(loginRequest != 14) {
+                        System.out.println("Invalid Login Request: "+loginRequest);
                         channel.close();
                         return null;
                     }
@@ -73,8 +73,6 @@ public class LoginDecoder extends FrameDecoder {
                     break;
 
                 case READ_CONNECTION_PAYLOAD:
-
-                    System.out.println(buffer.readableBytes()+"_"+loginEncryptSize);
 
                     if (buffer.readableBytes() < loginEncryptSize)
                         return null;
@@ -123,8 +121,6 @@ public class LoginDecoder extends FrameDecoder {
                     while ((passwordChar = rsaBuffer.get()) != ((byte) '\n')) {
                         password.append((char) passwordChar);
                     }
-
-                    System.out.println(username+"|"+password);
 
                     channel.getPipeline().remove("decoder");
                     channel.getPipeline().addFirst("decoder", new PacketDecoder(inCipher));

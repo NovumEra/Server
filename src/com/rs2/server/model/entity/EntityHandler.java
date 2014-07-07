@@ -27,27 +27,23 @@ public class EntityHandler<T extends Entity> implements Iterable<T> {
         return (T) entities[index];
     }
 
-    public boolean addEntity(int index, T entity) {
+    public int addEntity(int index, T entity) {
         synchronized (entities) {
-            if(index != -1 && !contains(index)) {
-                entities[index] = entity;
-                entityCount++;
-                return true;
+            if(index == -1) {
+                index = getFreeIndex();
+                entity.setIndex(index);
             }
-        }
-        return false;
-    }
-
-    public int addEntity(T entity) {
-        synchronized (entities) {
-            int index = getFreeIndex();
-            if(index != -1) {
+            if(index != -1 && !contains(index)) {
                 entities[index] = entity;
                 entityCount++;
                 return index;
             }
         }
         return -1;
+    }
+
+    public int addEntity(T entity) {
+        return addEntity(entity.getIndex(), entity);
     }
 
     public boolean contains(int index) {

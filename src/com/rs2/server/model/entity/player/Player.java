@@ -21,11 +21,14 @@ public class Player extends Entity {
     private final EntityHandler<Player> localPlayers;
     private final Abilities abilities;
     private Client client;
+    private int gender;
 
     public Player(Client client) {
         this.localPlayers = new EntityHandler<>(World.getPlayers().getCapacity(), 255);
-        this.client = client;
-        this.client.setPlayer(this);
+        if(client != null) {
+            this.client = client;
+            this.client.setPlayer(this);
+        }
         this.abilities = new Abilities();
 
         // Set the default appearance.
@@ -47,14 +50,14 @@ public class Player extends Entity {
 
     @Override
     public void process() {
-
+        movementHandler.process();
     }
 
     public void sendMapRegion() {
         getCurrentRegion().set(getPosition());
         setNeedsPlacement(true);
 
-        if(client != null && client.isWritable()) {
+        if(client.isWritable()) {
             StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(5);
             out.writeHeader(client.getCipher(), 73);
             out.writeShort(getPosition().getRegionX() + 6, StreamBuffer.ValueType.A);
@@ -64,22 +67,21 @@ public class Player extends Entity {
     }
 
     public void login() throws IOException {
-        if(client != null && client.isWritable()) {
-            ChannelBuffer buffer = ChannelBuffers.buffer(3);
-            buffer.writeByte(2);
-            buffer.writeByte(0);
-            buffer.writeByte(0);
-            client.send(buffer);
-        }
+        ChannelBuffer buffer = ChannelBuffers.buffer(3);
+        buffer.writeByte(2);
+        buffer.writeByte(0);
+        buffer.writeByte(0);
+        client.send(buffer);
 
-        World.getPlayers().addEntity(this);
+        World.getPlayers().addEntity(getIndex(), this);
         sendMapRegion();
-        setUpdateRequired(true);
         getUpdateFlags().addUpdate(Util.PLAYER_APPEARANCE_UPDATE_MASK);
+        setUpdateRequired(true);
+        System.out.println(this + " has logged in.");
     }
 
     @Override
-    public void resetAppearance() {
+    public void reset() {
         setPrimaryDirection(-1);
         setSecondaryDirection(-1);
         setUpdateRequired(false);
@@ -92,10 +94,6 @@ public class Player extends Entity {
         return true;
     }
 
-    public EntityHandler<Player> getLocalPlayers() {
-        return localPlayers;
-    }
-
     public Abilities getAbilities() {
         return abilities;
     }
@@ -104,7 +102,20 @@ public class Player extends Entity {
         return client;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public EntityHandler<Player> getPlayers() {
+        return localPlayers;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return client.toString();
     }
 }

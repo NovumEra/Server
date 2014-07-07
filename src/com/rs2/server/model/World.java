@@ -76,7 +76,7 @@ public class World {
                 continue;
             }
             try {
-                player.resetAppearance();
+                player.reset();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 disconnect(player);
@@ -84,13 +84,14 @@ public class World {
         }
     }
 
-    private static void disconnect(Player player) {
+    public static void disconnect(Player player) {
         if(player != null) {
             try {
                 if(player.logout()) {
                     players.remove(player.getIndex());
-                    player.getClient().getChannel().close();
-                    player.getClient().getChannel().setAttachment(null);
+                    if(player.getClient() != null) {
+                        player.getClient().disconnect();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.rs2.server.model.entity;
 
+import com.rs2.server.model.entity.movement.MovementHandler;
 import com.rs2.server.model.item.Item;
 import com.rs2.server.model.map.Position;
 
@@ -15,7 +16,8 @@ public abstract class Entity {
 
     protected final Map<String, Object> attributes = new HashMap<String, Object>();
 
-    protected final Position position = new Position(3145, 3225).randomise(3);
+    protected final MovementHandler movementHandler = new MovementHandler(this);
+    protected final Position position = new Position(3145, 3225).randomise(5);
     protected final Position currentRegion = new Position(0, 0, 0);
     protected final UpdateFlags updateFlags = new UpdateFlags();
 
@@ -31,7 +33,7 @@ public abstract class Entity {
     protected int index = -1;
     private boolean resetMovementQueue;
 
-    public abstract void resetAppearance();
+    public abstract void reset();
 
     public abstract void process();
 
@@ -44,6 +46,10 @@ public abstract class Entity {
 
     public void setAttribute(String key, Object value) {
         this.attributes.put(key, value);
+    }
+
+    public MovementHandler getMovementHandler() {
+        return movementHandler;
     }
 
     public Position getPosition() {

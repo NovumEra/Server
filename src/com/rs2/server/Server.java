@@ -1,6 +1,8 @@
 package com.rs2.server;
 
+import com.rs2.server.model.Client;
 import com.rs2.server.model.World;
+import com.rs2.server.model.entity.player.Player;
 import com.rs2.server.net.PipelineFactory;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -10,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
