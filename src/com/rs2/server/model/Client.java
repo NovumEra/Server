@@ -47,7 +47,9 @@ public class Client {
         if(channel == null || !channel.isConnected()) {
             return;
         }
-        channel.write(buffer);
+        if(channel.isWritable()) {
+            channel.write(buffer);
+        }
     }
 
     public Channel getChannel() {
@@ -92,5 +94,9 @@ public class Client {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public boolean isWritable() {
+        return channel.isWritable();
     }
 }

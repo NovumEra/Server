@@ -54,13 +54,6 @@ public class PipelineFactory extends SimpleChannelHandler implements ChannelPipe
     }
 
     @Override
-    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        System.out.println("channelClosed_____");
-        System.out.println(ctx.getChannel());
-        System.out.println(e.getChannel());
-    }
-
-    @Override
     public ChannelPipeline getPipeline() throws Exception {
         DefaultChannelPipeline channelPipeline = new DefaultChannelPipeline();
         channelPipeline.addLast("encoder", new OneToOneEncoder() {
